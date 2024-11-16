@@ -86,7 +86,7 @@ class AbstractProgram(ABC):
         return completion_state
 
     @abstractmethod
-    def _process_input(selfself, user_input: str) -> bool:
+    def _process_input(self, user_input: str) -> bool:
         """
         Subclasses must implement this method to handle specific execution logic.
 
