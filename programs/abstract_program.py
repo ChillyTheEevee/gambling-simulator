@@ -1,5 +1,9 @@
 from abc import ABC, abstractmethod
 
+from exceptions.abstract_program_complete_exception import AbstractProgramCompleteException
+from exceptions.already_executed_exception import AlreadyExecutedException
+from exceptions.execution_not_initiated_exception import ExecutionNotInitiatedException
+
 
 class AbstractProgram(ABC):
     """
@@ -24,21 +28,40 @@ class AbstractProgram(ABC):
             True, any subsequent calls to this AbstractProgram will result in an error being thrown.
     """
 
-    @abstractmethod
+    def __init__(self):
+        self.execution_begun = False
+        self.completed_execution = False
+
     def execute_program(self) -> bool:
         """
-        Executes this AbstractProgram until either it has reached full completion or requires additional input.
+        Executes this AbstractProgram until either it has reached full completion or requires additional input. This
+        method ensures state checks are consistent across implementations.
 
         Returns:
             bool: True if this AbstractProgram has completed execution without the need for additional input,
                 False otherwise.
 
         Exceptions:
-            AbstractProgramCompleteException: If called when this AbstractProgram has already completed execution.
+            AlreadyExecutedException: If this AbstractProgram has already been executed.
+        """
+        if self.execution_begun:
+            raise AlreadyExecutedException()
+        self.execution_begun = True
+        completion_state = self._execute()
+        self.completed_execution = completion_state
+        return completion_state
+
+    @abstractmethod
+    def _execute(self) -> bool:
+        """
+        Subclasses must implement this method to provide specific execution logic.
+
+        Returns:
+            bool: True if this AbstractProgram has completed execution without the need for additional input,
+                False otherwise.
         """
         pass
 
-    @abstractmethod
     def process_user_input(self, user_input: str) -> bool:
         """
         Continues execution of this AbstractProgram until either it has reached completion or requires additional input.
@@ -53,5 +76,22 @@ class AbstractProgram(ABC):
         Exceptions:
             AbstractProgramCompleteException: If called when this AbstractProgram has already completed execution.
             ExecutionNotInitiatedException: If called when execute_program(self) has not yet been called.
+        """
+        if self.completed_execution:
+            raise AbstractProgramCompleteException()
+        if not self.execution_begun:
+            raise ExecutionNotInitiatedException()
+        completion_state = self._process_input(user_input)
+        self.completed_execution = completion_state
+        return completion_state
+
+    @abstractmethod
+    def _process_input(selfself, user_input: str) -> bool:
+        """
+        Subclasses must implement this method to handle specific execution logic.
+
+        Returns:
+            bool: True if the AbstractProgram has completed execution without the need for additional input,
+                False otherwise.
         """
         pass
