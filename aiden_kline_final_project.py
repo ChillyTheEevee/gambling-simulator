@@ -1,5 +1,6 @@
-#blackjack
+# blackjack
 import random
+
 # how to make this - ?
 # have list of numbers from 1 to 13
 # 1 is ace, 11 is jack, 12 is queen, 13 is king
@@ -48,6 +49,7 @@ def aceCheck(list):
             if aceTotal > 21:
                 aceTotal -= 10
     return aceTotal
+
 
 while True:
     print("Welcome to Blackjack! When you're ready, type in play to start. If you want to leave, type exit.")

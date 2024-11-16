@@ -11,20 +11,19 @@
 # Date:         26 October 2024
 #
 
-bank = 1000 #this is a test value
-#we will then define the dictionary for the slots machine, using characters, and addind certain amounts of certain values
-import sys
+bank = 1000  # this is a test value
+# we will then define the dictionary for the slots machine, using characters, and addind certain amounts of certain values
 import random
-import math
 
-def print_slots(sym1, sym2, sym3): #this will be used to print the slot grid
+
+def print_slots(sym1, sym2, sym3):  # this will be used to print the slot grid
     print()
     lines = 23
-    spec = ['  BAR  ', '   7   '] #these will be used since the spacing between emojis and text diff
+    spec = ['  BAR  ', '   7   ']  # these will be used since the spacing between emojis and text diff
     if sym1 in spec and sym2 in spec and sym3 in spec:
-        lines += 2 #this adjusts grid size if all are spec
+        lines += 2  # this adjusts grid size if all are spec
     elif (sym1 in spec and sym2 in spec or sym1 in spec and sym3 in spec or sym2 in spec and
-            sym3 in spec): #this test for if 2 values are spec, and adjusts the size of the grid
+          sym3 in spec):  # this test for if 2 values are spec, and adjusts the size of the grid
         lines += 1
     print('         SLOTS         ')
     print('-' * lines)
@@ -32,24 +31,27 @@ def print_slots(sym1, sym2, sym3): #this will be used to print the slot grid
     print('-' * lines)
     print()
 
-def run_slots(): #this function returns the random values and symbols to be used
+
+def run_slots():  # this function returns the random values and symbols to be used
     spaces = {0: '   7   ', 1: '  \N{cherries}  ', 2: '  \N{cherries}  ', 3: '  \N{lemon}  ',
-              4: '  \N{lemon}  ', 5: '  \N{watermelon}  ', 6: '  \N{watermelon}  ', 7: '  \N{banana}  ', 8: '  \N{banana}  ',
+              4: '  \N{lemon}  ', 5: '  \N{watermelon}  ', 6: '  \N{watermelon}  ', 7: '  \N{banana}  ',
+              8: '  \N{banana}  ',
               9: '  \N{gem stone}  ', 10: '  \N{gem stone}  ', 11: '  \N{bell}  ', 12: '  \N{bell}  ', 13: '  BAR  ',
-              14: '  BAR  ', 15: '  \N{skull}  ', 16: '  \N{skull}  ', 17: '  \N{skull}  ', 18: '  \N{skull}  ', 19: '  \N{skull}  ',
+              14: '  BAR  ', 15: '  \N{skull}  ', 16: '  \N{skull}  ', 17: '  \N{skull}  ', 18: '  \N{skull}  ',
+              19: '  \N{skull}  ',
               20: '  \N{skull}  '}
     # we use the \N to access the unicode, and we will use the numbers along with a random number selector to
     # access the dictionary
-
 
     sym1 = random.randint(0, 20)
     sym2 = random.randint(0, 20)
     sym3 = random.randint(0, 20)
     return sym1, spaces[sym1], sym2, spaces[sym2], sym3, spaces[sym3]
 
+
 def reoccur(val1, sym1, val2, sym2, val3, sym3):
-    #this function goes thru each point, counts the amount the top value reoccurs, and returns the reoccuring value, and
-    #the amount it reoocurs
+    # this function goes thru each point, counts the amount the top value reoccurs, and returns the reoccuring value, and
+    # the amount it reoocurs
     value = 22
     count = 0
     if sym1 == sym2 or sym1 == sym3:
@@ -59,6 +61,7 @@ def reoccur(val1, sym1, val2, sym2, val3, sym3):
         value = val2
         count += 1
     return value, count
+
 
 def points(value, count, bank):
     fruits = [1, 2, 3, 4, 5, 6, 7, 8]  # we are attaching the numbers to lists to assign certain point values
@@ -97,7 +100,8 @@ def points(value, count, bank):
         print('No matches, bet value / 2')
     return bank
 
-#this will be where the game runs
+
+# this will be where the game runs
 bet = input('Enter a dollar amount (ex. 12.34) to bet, enter stop to leave: ')
 while bet != 'stop' and bank > 0:
     if bank - float(bet) < 0:
@@ -115,13 +119,13 @@ while bet != 'stop' and bank > 0:
         betfinal = betfinal
         tempbank = bank
         tempbank += betfinal
-        finalbank = f'{tempbank:.2f}' #this fixes the rounding errors
+        finalbank = f'{tempbank:.2f}'  # this fixes the rounding errors
         print(finalbank)
-        bank = float(finalbank) #makes sure all calculations stay within 2 decimal places
+        bank = float(finalbank)  # makes sure all calculations stay within 2 decimal places
         if bank <= 0.01:
             print('You ran out of money, gamble more responsibly next time, goodbye.')
             break
-        else: #FIX ROUNDING ERRORS WITH SMALL DECIMALS
+        else:  # FIX ROUNDING ERRORS WITH SMALL DECIMALS
             print(f'Final Bank Value: {bank:.2f}')
             bet = input('Enter a dollar amount (ex. 12.34) to bet, enter stop to leave: ')
             continue
