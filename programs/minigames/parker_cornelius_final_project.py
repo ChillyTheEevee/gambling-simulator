@@ -9,7 +9,6 @@ money = 500
 print("Roulette!")
 print("Place bets on a color or on numbers to win money based off the odds")
 
-
 # Betting loop
 while money > 0:
     print(f"Current money: ${money}")
