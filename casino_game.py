@@ -1,6 +1,7 @@
 from typing import Optional
 
 from game_state.game_state import GameState
+from player_data import PlayerData
 from programs.abstract_program import AbstractProgram
 
 
@@ -20,15 +21,17 @@ class CasinoGame:
 
     def __init__(self):
         """Initializes the CasinoGame class with 1,000 initial coins"""
-        self.coins: int = 1_000
-        self.items: list = []
+        self.player_data: PlayerData = PlayerData()
         self.game_state: GameState = GameState.MENU
         self.current_abstract_program: Optional[AbstractProgram] = None
 
     def execute_program(self) -> None:
         """Starts the primary gameplay loop of this CasinoGame."""
         # todo insert startup logic here
-        self.run_game()
+        print("Starting CasinoGame...")
+        complete = self.current_abstract_program.execute_program()
+        if not complete:
+            self.run_game()
 
     def run_game(self) -> None:
         """The gameplay loop of this CasinoGame."""
@@ -42,5 +45,8 @@ class CasinoGame:
             case GameState.MENU:
                 pass  # todo implement menu, minigame selection and booting
             case GameState.MINIGAME:
-                self.current_abstract_program.process_user_input(user_input)
+                minigame_complete = self.current_abstract_program.process_user_input(user_input)
+                if minigame_complete:
+                    self.game_state = GameState.MENU
+                    self.current_abstract_program = None
         return False
