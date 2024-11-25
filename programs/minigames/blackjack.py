@@ -1,9 +1,10 @@
 import random
 from typing import override
 
+from player_data import PlayerData
 from programs.abstract_program import AbstractProgram
 
-cards = {
+card_value_map = {
     "ace": 1,
     2: 2,
     3: 3,
@@ -27,77 +28,116 @@ class BlackjackMinigame(AbstractProgram):
     Written by Aiden Kline. Adapted to the AbstractProgram interface by Daniel Myers.
     """
 
-    def __init__(self):
+    def __init__(self, player_data: PlayerData):
         super().__init__()
+        self.__player_data = player_data
+
         self.__dealer_cards = None
         self.__user_cards = None
-
-        self.__gameBegun = False
+        self.__game_begun = False
 
     @override
     def _execute(self) -> bool:
         print("Welcome to Blackjack!")
-        print("How much would you like to gamble (integer)?: ")
+        print(f"You have {self.__player_data.get_player_coins()} coins.")
+        print("How much would you like to gamble (integer)?: ", end='')
         return False
 
     @override
     def _process_input(self, user_input: str) -> bool:
-        if not self.__gameBegun:
-            try:
-                self.__money_pool = int(user_input)
-                print(f"Bet {self.__money_pool} coins!")
-            except ValueError:
-                print("Please enter a valid integer of how much to gamble: ", end='')
+        if not self.__game_begun:
+            # If the game has not started, prompt the user for a bet
+            successful_bet = self.__place_user_bet(user_input)
+            if not successful_bet:
                 return False
 
-            self._setup_game()
+            # If bet was successful, deal cards
+            self.__game_begun = True
+            print("Dealing out cards...\n")
+            self.__deal_cards()
+            self._print_game_state()
 
-            player_blackjack = self._calculate_score(self.__user_cards) == 21
-            dealer_blackjack = self._calculate_score(self.__dealer_cards) == 21
+            # Process blackjacks
+            player_blackjack = self.__calculate_score(self.__user_cards) == 21
+            dealer_blackjack = self.__calculate_score(self.__dealer_cards) == 21
             if player_blackjack or dealer_blackjack:
-                self._process_blackjacks(player_blackjack, dealer_blackjack)
+                self.__process_blackjacks(player_blackjack, dealer_blackjack)
                 return True
 
-            self._print_game_state()
+            # Prompt additional input if no blackjacks
             print("\nDo you want to hit, or stand?: ", end='')
             return False
 
+        # Process hit or stand
         user_input = user_input.lower()
-        if user_input != "hit" or "stand":
+        if user_input != "hit" and user_input != "stand":
             print("Invalid input. Try again: ", end='')
             return False
 
         if user_input == "hit":
-            drawn_card = self._generate_random_card()
-            print(f"Drew a {drawn_card}!")
-            self.__user_cards.append(drawn_card)
-            user_score = self._calculate_score(self.__user_cards)
-            print("Your current score is: " + str(user_score))
-            if user_score > 21:
-                print("\nBust! Better luck next time.")
-                # todo implement bust endgame
-                return True
-            elif user_score == 21:
-                print("\nAchieved a 21!")
-                self._process_endgame()
-                return True
-            else:
-                print("\nDo you want to hit, or stand?: ", end='')
-                return False
+            game_over = self.__process_hit()
+            return game_over
         elif user_input == "stand":
-            self._process_endgame()
+            self.__process_stand()
             return True
 
+    def __place_user_bet(self, user_input: str) -> bool:
+        """Attempts to place a bet from the given user_input. Returns true if successful."""
+        try:
+            attempted_bet = int(user_input)
+            if attempted_bet <= 0:
+                print("Please enter a positive bet: ", end='')
+                return False
+            player_coins = self.__player_data.get_player_coins()
+            if player_coins < attempted_bet:
+                print(f"Sorry, you only have {player_coins} coins! Enter your new bet: ", end='')
+                return False
+
+            # Place the bet
+            self.__player_data.set_player_coins(player_coins - attempted_bet)
+            self.__money_pool = attempted_bet
+            print(f"Bet {self.__money_pool} coins!")
+            return True
+        except ValueError:
+            print("Please enter a valid integer of how much to gamble: ", end='')
+            return False
+
+    def __process_hit(self) -> bool:
+        """Processes a hit. Returns true if the game ends as a result of this hit."""
+        drawn_card = self.__generate_random_card()
+        print(f"Drew a {drawn_card}!\n")
+        self.__user_cards.append(drawn_card)
+        user_score = self.__calculate_score(self.__user_cards)
+        self._print_game_state()
+        if user_score > 21:
+            print("\nBust! Better luck next time.")
+            return True
+        elif user_score == 21:
+            print("\nAchieved a 21!")
+            self.__process_stand()
+            return True
+        else:
+            print("\nDo you want to hit, or stand?: ", end='')
+            return False
+
     def _print_game_state(self) -> None:
+        """Prints all information available to the player when deciding to hit or stand."""
         print(f"The dealer's shown card is: {self.__dealer_cards[0]}\n")
         print(f"Your cards are: ", end="")
         for i in range(len(self.__user_cards) - 1):
             print(self.__user_cards[i], end=", ")
         print(self.__user_cards[len(self.__user_cards) - 1])
-        print("Your current score is: " + str(self._calculate_score(self.__user_cards)))
+        print("Your current score is: " + str(self.__calculate_score(self.__user_cards)))
 
-    def _calculate_score(self, cards):
-        """Calculates the highest blackjack score for the cards without going over 21."""
+    def __print_dealer_cards(self) -> None:
+        """Prints the dealer's cards. Used when the dealer is drawing."""
+        print(f"The dealer's cards are: ", end="")
+        for i in range(len(self.__dealer_cards) - 1):
+            print(self.__dealer_cards[i], end=", ")
+        print(self.__dealer_cards[len(self.__dealer_cards) - 1])
+
+    def __calculate_score(self, cards: list[str]):
+        """Calculates the highest blackjack score for cards without going over 21."""
         score = 0
 
         # Count non-ace score and count aces
@@ -106,58 +146,85 @@ class BlackjackMinigame(AbstractProgram):
             if card == "ace":
                 num_aces += 1
                 continue
-            score += cards[card]
+            score += card_value_map[card]
 
         # Count aces to get the closest score to 21 without going over
-        score += num_aces * 10
+        score += num_aces * 11
         while num_aces > 0 and score > 21:
-            score -= 9
+            score -= 10
             num_aces -= 1
         return score
 
-    def _generate_random_card(self) -> str:
+    def __generate_random_card(self) -> str:
         """Generates a random card type (i.e. 1, 2, 3, ..., queen, king, ace)"""
-        return random.choice(list(cards.keys()))
+        return random.choice(list(card_value_map.keys()))
 
-    def _process_endgame(self) -> None:
-        current_dealer_score = self._calculate_score(self.__dealer_cards)
+    def __process_stand(self) -> None:
+        """
+        Processes a stand. This method allows the dealer to draw and then determines the winner
+        and distributes rewards.
+        """
+        # The dealer reveals his card
+        print(f"\nThe dealer reveals his second card, a(n) {self.__dealer_cards[1]}.")
+        self.__print_dealer_cards()
+
+        # Allow the dealer to make moves
+        current_dealer_score = self.__calculate_score(self.__dealer_cards)
 
         # The dealer will continue to draw cards until their total is above 16, or they bust
         while current_dealer_score < 17:
             # The dealer draws
-            print("\nThe dealer hits again.")
-            drawn_card = self._generate_random_card()
-            print(f"\nThe dealer drew a {drawn_card}!")
+            print("The dealer hits again.")
+            drawn_card = self.__generate_random_card()
+            print(f"The dealer drew a {drawn_card}!")
             self.__dealer_cards.append(drawn_card)
 
-            # Print the dealer's current cards
-            print(f"The dealer's cards are: ", end="")
-            for i in range(len(self.__user_cards) - 1):
-                print(self.__dealer_cards[i], end=", ")
-            print(self.__dealer_cards[len(self.__dealer_cards) - 1])
+            self.__print_dealer_cards()
 
             # Process the dealer's score
-            current_dealer_score = self._calculate_score(self.__dealer_cards)
+            current_dealer_score = self.__calculate_score(self.__dealer_cards)
+        print("The dealer stands.")
 
-            if current_dealer_score > 21:  # The dealer busts
-                pass # todo handle dealer busts
-
-        # The dealer has finished hitting and has not bust. Determine victor.
-        # todo grant awards for victory
-        user_score = self._calculate_score(self.__user_cards)
+        # The dealer has finished hitting. Determine victor.
+        player_victory = False
+        user_score = self.__calculate_score(self.__user_cards)
         print(f"\nThe dealer's total is: {current_dealer_score}")
-        if user_score > current_dealer_score:
-            print("You win! you beat the dealer.")
-        else:
+        print(f"Your total is: {user_score}")
+        if current_dealer_score > 21:
+            print("The dealer busted! You win.")
+            player_victory = True
+        elif user_score > current_dealer_score:
+            print("You win!")
+            player_victory = True
+        elif user_score < current_dealer_score:
             print("You lose, the dealer beat you :(")
+            player_victory = False
+        else:
+            print("Draw! Your coins will be returned.")
+            # Return the player's original bet
+            self.__player_data.add_player_coins(self.__money_pool)
+            return
 
+        # Distribute rewards to winner
+        if player_victory:
+            self.__player_data.add_player_coins(self.__money_pool * 2)
 
+    def __deal_cards(self):
+        self.__dealer_cards = [self.__generate_random_card(), self.__generate_random_card()]
+        self.__user_cards = [self.__generate_random_card(), self.__generate_random_card()]
 
-    def _setup_game(self):
-        print("Dealing out cards...")
-        self.__dealer_cards = [self._generate_random_card(), self._generate_random_card()]
-        self.__user_cards = [self._generate_random_card(), self._generate_random_card()]
-        self.__gameBegun = True
+    def __process_blackjacks(self, player_blackjack: bool, dealer_blackjack: bool) -> None:
+        if player_blackjack:
+            print("You have a blackjack!")
+        print(f"The dealer reveals his second card, a(n) {self.__dealer_cards[1]}.")
+        self.__print_dealer_cards()
+        if dealer_blackjack:
+            print("The dealer has a blackjack!")
 
-    def _process_blackjacks(self, player_blackjack: bool, dealer_blackjack: bool) -> None:
-        pass  # todo implement blackjack logic
+        if player_blackjack and dealer_blackjack:
+            print("Because both the player and dealer have a blackjack, it's a tie. Coins are returned.")
+        elif player_blackjack:
+            print("You win by blackjack! Congratulations!")
+            self.__player_data.add_player_coins(self.__money_pool * 3)
+        elif dealer_blackjack:
+            print("The dealer has a blackjack. The game is over.")
