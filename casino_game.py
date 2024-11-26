@@ -1,8 +1,9 @@
 from typing import Optional
 
 from game_state.game_state import GameState
-from player_data import PlayerData
 from programs.abstract_program import AbstractProgram
+from managers.gambling_manager import GamblingManager
+from programs.minigames.roulette import RouletteMinigame
 
 
 class CasinoGame:
@@ -23,7 +24,7 @@ class CasinoGame:
         self.game_state: GameState = GameState.MENU
         self.current_abstract_program: Optional[AbstractProgram] = None
 
-        self.__gamble_manager = GambleManager(self.player_data)
+        self.__gambling_manager = GamblingManager(self.player_data)
 
     def execute_program(self) -> None:
         """Starts the primary gameplay loop of this CasinoGame."""
