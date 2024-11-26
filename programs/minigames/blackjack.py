@@ -36,6 +36,8 @@ class BlackjackMinigame(AbstractProgram):
         self.__user_cards = None
         self.__game_begun = False
 
+        self.__money_pool = None
+
     @override
     def _execute(self) -> bool:
         print("Welcome to Blackjack!")
