@@ -19,4 +19,4 @@ class Rent(AbstractItem):
    `---'
    _|_|_
         """.split('\n')))
-        super().__init__("2008 Honda Civic", 7072, purchase_message, picture)
+        super().__init__("Rent", 670, purchase_message, picture)
