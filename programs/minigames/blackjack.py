@@ -88,6 +88,7 @@ class BlackjackMinigame(AbstractProgram):
         try:
             attempted_bet = int(user_input)
             bet_successful = self.__gambling_manager.place_gamble(attempted_bet)
+            self.__money_pool = attempted_bet
             if bet_successful:
                 print(f"Bet {self.__money_pool} coins!")
                 return True
