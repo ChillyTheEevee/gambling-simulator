@@ -9,7 +9,7 @@ class HondaCivic(AbstractItem):
     """
 
     def __init__(self):
-        purchase_message = "Woah dude! That's a sick ride. Congrats!"
+        purchase_message = '"Woah dude! That\'s a sick ride. Congrats!"'
         picture: tuple[str] = tuple(str(r"""
         _______
        //  ||\ \

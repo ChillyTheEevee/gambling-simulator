@@ -9,7 +9,7 @@ class Loan(AbstractItem):
     """
 
     def __init__(self):
-        purchase_message = "Just sign there, there, and there."
+        purchase_message = '*Sigh "Just sign there..."'
         picture: tuple[str] = tuple(str(r"""
 ------\ 
 | 38% | 

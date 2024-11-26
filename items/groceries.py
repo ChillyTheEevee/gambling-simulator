@@ -9,7 +9,7 @@ class Groceries(AbstractItem):
     """
 
     def __init__(self):
-        purchase_message = "Just sign there, there, and there."
+        purchase_message = '"Hey, that looks pretty tasty!"'
         picture: tuple[str] = tuple(str(r"""
   ,--./,-.
  / #      \
