@@ -44,3 +44,7 @@ class GamblingManager:
             raise ValueError("Attempted to reward a negative amount of coins.")
 
         self.__player_data.set_player_coins(self.__player_data.get_player_coins() + number_of_coins)
+
+    def get_player_coins(self) -> int:
+        """Returns the number of coins a player has to gamble with."""
+        return self.__player_data.get_player_coins()
