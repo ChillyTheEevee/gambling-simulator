@@ -1,9 +1,9 @@
 from typing import Optional
 
 from game_state.game_state import GameState
-from programs.abstract_program import AbstractProgram
 from managers.gambling_manager import GamblingManager
-from programs.minigames.roulette import RouletteMinigame
+from player_data import PlayerData
+from programs.abstract_program import AbstractProgram
 
 
 class CasinoGame:
