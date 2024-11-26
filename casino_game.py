@@ -12,8 +12,6 @@ class CasinoGame:
     The CasinoGame class is a representation of the entire Casino Game program.
 
     Attributes:
-        coins (int): How many coins the user has
-        items (list): A list of items that the user has bought
         game_state (GameState): The current game state of CasioGame
         current_abstract_program (Optional[AbstractProgram]): The instance of the AbstractProgram currently being used
             by CasinoGame, None if game_state is GameState.MENU
@@ -24,6 +22,8 @@ class CasinoGame:
         self.player_data: PlayerData = PlayerData()
         self.game_state: GameState = GameState.MENU
         self.current_abstract_program: Optional[AbstractProgram] = None
+
+        self.__gamble_manager = GambleManager(self.player_data)
 
     def execute_program(self) -> None:
         """Starts the primary gameplay loop of this CasinoGame."""
