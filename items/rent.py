@@ -10,13 +10,13 @@ class Rent(AbstractItem):
 
     def __init__(self):
         purchase_message = "You paid rent! 🎉 Your spouse and kid are going to be so proud!"
-        picture: tuple[str] = tuple(str(r"""
+        picture: tuple[str, ...] = tuple(str(x) for x in r"""
   _______
  |WORLDS |✨
 (| BEST  |)
  |RENTER |
-✨\     /
-   `---'
+  \     /
+  `---'
    _|_|_
-        """.split('\n')))
+""".split('\n'))
         super().__init__("Rent", 670, purchase_message, picture)

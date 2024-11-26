@@ -68,6 +68,7 @@ class GamblingSimulator:
                         case 'credits':
                             pass # todo implement credits
                         case 'quit':
+                            print("Thanks for playing!")
                             return True
                     self.current_abstract_program.execute_program()
             case GameState.MINIGAME:

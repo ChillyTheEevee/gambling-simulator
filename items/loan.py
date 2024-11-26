@@ -10,10 +10,10 @@ class Loan(AbstractItem):
 
     def __init__(self):
         purchase_message = '*Sigh "Just sign there..."'
-        picture: tuple[str] = tuple(str(r"""
+        picture: tuple[str, ...] = tuple(str(x) for x in r"""
 ------\ 
 | 38% | 
 \ APY \ 
  \------
-        """.split('\n')))
+        """.split('\n'))
         super().__init__("Predatory Loan", -2500, purchase_message, picture)

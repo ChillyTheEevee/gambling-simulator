@@ -10,11 +10,11 @@ class Groceries(AbstractItem):
 
     def __init__(self):
         purchase_message = '"Hey, that looks pretty tasty!"'
-        picture: tuple[str] = tuple(str(r"""
-  ,--./,-.
- / #      \
+        picture: tuple[str, ...] = tuple(str(x) for x in r"""
+  ,--./,-.  
+ / #      \ 
 |          |
- \        /
-  `._,._,
-        """.split('\n'))) # todo credit Hayley Jane Wakenshaw for art
+ \        / 
+  `._,._,   
+        """.split('\n')) # credit to Hayley Jane Wakenshaw for art
         super().__init__("Groceries", 30, purchase_message, picture)

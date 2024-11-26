@@ -1,3 +1,4 @@
+from items.abstract_item import AbstractItem
 from player_data import PlayerData
 from programs.abstract_program import AbstractProgram
 
@@ -34,7 +35,7 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
         self.__credit_string = "By Daniel Myers, Aiden Kline, Parker Cornelius, and Caleb Arnold"
 
         # Handling selection
-        self.__valid_options = ('blackjack', 'slots', 'roulette', 'store', 'credits', 'quit')
+        self.__valid_options = ('blackjack', 'slots', 'roulette', 'store', 'quit')
         self.__selected_option = None
 
     def _execute(self) -> bool:
@@ -47,7 +48,7 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
             self.__selected_option = user_input
             return True
         else:
-            print("Enter one of the options above (i.e. blackjack, store, credits): ", end='')
+            print("Enter one of the options above (i.e. blackjack, store, quit): ", end='')
             return False
 
     def get_selection(self) -> str:
@@ -73,6 +74,7 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
 
         # Append credit string centered below logo
         string_list[len(gambling_simulator_logo_lines) + 2] += f'{self.__credit_string:^80}'
+        string_list[len(gambling_simulator_logo_lines) + 6] += f'{"ENGR 102 Fall 2024":^80}'
 
         # Append stylized selection options below credits
         selection_display_string = 'Please enter either: '
@@ -83,6 +85,48 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
         string_list[len(gambling_simulator_logo_lines) + 3] += f'{'-' * len(selection_display_string):^80}'
         string_list[len(gambling_simulator_logo_lines) + 4] += f'{selection_display_string:^80}'
         string_list[len(gambling_simulator_logo_lines) + 5] += f'{'-' * len(selection_display_string):^80}'
+
+        # Visualize items
+        player_items = self.__player_data.get_items()
+        player_item_dict: dict[str, AbstractItem] = {item.get_name(): item for item in player_items}
+
+        # Append loan visualization after selection
+        if "Predatory Loan" in player_item_dict:
+            loan_item = player_item_dict["Predatory Loan"]
+            loan_picture = loan_item.get_picture()
+            for i in range(len(loan_picture)):
+                string_list[len(gambling_simulator_logo_lines) + i + 1] += f'{loan_picture[i]:^10}'
+        else:
+            for i in range(5):
+                string_list[len(gambling_simulator_logo_lines) + i + 1] += ' ' * 10
+
+        # Append car visualization
+        if "2008 Honda Civic" in player_item_dict:
+            car_item = player_item_dict["2008 Honda Civic"]
+            car_picture = car_item.get_picture()
+            for i in range(len(car_picture)):
+                string_list[len(gambling_simulator_logo_lines) + i -6] += ' ' * 3 + f'{car_picture[i]:^10}'
+        else:
+            for i in range(6):
+                string_list[len(gambling_simulator_logo_lines) + i -6] += ' ' * 13
+
+        # Append rent trophy visualization
+        if "Rent" in player_item_dict:
+            rent_item = player_item_dict["Rent"]
+            rent_picture = rent_item.get_picture()
+            for i in range(len(rent_picture)):
+                string_list[len(gambling_simulator_logo_lines) + i -15] += ' ' * 3 + f'{rent_picture[i]:^10}'
+        else:
+            for i in range(7):
+                string_list[len(gambling_simulator_logo_lines) + i -15] += ' ' * 13
+
+        # Append coin visualization after selection
+        coin_display_string = f'Coin total: {self.__player_data.get_player_coins():,}'
+        if self.__player_data.get_player_coins() <= 0:
+            coin_display_string += ' 😭'
+        string_list[len(gambling_simulator_logo_lines) + 3] += f'{'-' * len(coin_display_string):^50}'
+        string_list[len(gambling_simulator_logo_lines) + 4] += f'{coin_display_string:^50}'
+        string_list[len(gambling_simulator_logo_lines) + 5] += f'{'-' * len(coin_display_string):^50}'
 
         # Return string representation of main menu
         return str.join('\n', string_list)

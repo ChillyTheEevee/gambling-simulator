@@ -8,10 +8,10 @@ class AbstractItem(ABC):
     The __str__ method of an AbstractItem returns the picture of the Item in string form.
     """
 
-    def __init__(self, name: str, price: int, purchase_message: str, picture: tuple[str]):
+    def __init__(self, name: str, price: int, purchase_message: str, picture: tuple[str, ...]):
         self.__name: str = name
         self.__price: int = price
-        self.__picture: tuple[str] = picture
+        self.__picture: tuple[str, ...] = picture
         self.__purchase_message:str = purchase_message
 
     def get_name(self) -> str:
@@ -22,7 +22,7 @@ class AbstractItem(ABC):
         """Returns the price of the item."""
         return self.__price
 
-    def get_picture(self) -> tuple[str]:
+    def get_picture(self) -> tuple[str, ...]:
         """Returns the picture of the item."""
         return self.__picture
 
