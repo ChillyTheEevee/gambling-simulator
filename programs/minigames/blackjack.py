@@ -1,7 +1,7 @@
 import random
 from typing import override
 
-from player_data import PlayerData
+from managers.gambling_manager import GamblingManager
 from programs.abstract_program import AbstractProgram
 
 card_value_map = {
@@ -28,9 +28,9 @@ class BlackjackMinigame(AbstractProgram):
     Written by Aiden Kline. Adapted to the AbstractProgram interface by Daniel Myers.
     """
 
-    def __init__(self, player_data: PlayerData):
+    def __init__(self, gambling_manager: GamblingManager):
         super().__init__()
-        self.__player_data = player_data
+        self.__gambling_manager = gambling_manager
 
         self.__dealer_cards = None
         self.__user_cards = None
@@ -39,7 +39,7 @@ class BlackjackMinigame(AbstractProgram):
     @override
     def _execute(self) -> bool:
         print("Welcome to Blackjack!")
-        print(f"You have {self.__player_data.get_player_coins()} coins.")
+        print(f"You have {self.__gambling_manager.get_player_coins()} coins.")
         print("How much would you like to gamble (integer)?: ", end='')
         return False
 
@@ -85,19 +85,13 @@ class BlackjackMinigame(AbstractProgram):
         """Attempts to place a bet from the given user_input. Returns true if successful."""
         try:
             attempted_bet = int(user_input)
-            if attempted_bet <= 0:
-                print("Please enter a positive bet: ", end='')
+            bet_successful = self.__gambling_manager.place_gamble(attempted_bet)
+            if bet_successful:
+                print(f"Bet {self.__money_pool} coins!")
+                return True
+            else:
+                print(f"Please enter a valid bet. You have {self.__gambling_manager.get_player_coins()} coins: ")
                 return False
-            player_coins = self.__player_data.get_player_coins()
-            if player_coins < attempted_bet:
-                print(f"Sorry, you only have {player_coins} coins! Enter your new bet: ", end='')
-                return False
-
-            # Place the bet
-            self.__player_data.set_player_coins(player_coins - attempted_bet)
-            self.__money_pool = attempted_bet
-            print(f"Bet {self.__money_pool} coins!")
-            return True
         except ValueError:
             print("Please enter a valid integer of how much to gamble: ", end='')
             return False
@@ -202,12 +196,12 @@ class BlackjackMinigame(AbstractProgram):
         else:
             print("Draw! Your coins will be returned.")
             # Return the player's original bet
-            self.__player_data.add_player_coins(self.__money_pool)
+            self.__gambling_manager.give_player_payout(self.__money_pool)
             return
 
         # Distribute rewards to winner
         if player_victory:
-            self.__player_data.add_player_coins(self.__money_pool * 2)
+            self.__gambling_manager.give_player_payout(self.__money_pool * 2)
 
     def __deal_cards(self):
         self.__dealer_cards = [self.__generate_random_card(), self.__generate_random_card()]
@@ -225,6 +219,6 @@ class BlackjackMinigame(AbstractProgram):
             print("Because both the player and dealer have a blackjack, it's a tie. Coins are returned.")
         elif player_blackjack:
             print("You win by blackjack! Congratulations!")
-            self.__player_data.add_player_coins(self.__money_pool * 3)
+            self.__gambling_manager.give_player_payout(self.__money_pool * 3)
         elif dealer_blackjack:
             print("The dealer has a blackjack. The game is over.")
