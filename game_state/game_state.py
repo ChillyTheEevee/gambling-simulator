@@ -10,3 +10,4 @@ class GameState(Enum):
     """
     MENU = 0
     MINIGAME = 1
+    STORE = 2

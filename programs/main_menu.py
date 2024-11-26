@@ -3,9 +3,13 @@ from programs.abstract_program import AbstractProgram
 
 
 class MainMenu(AbstractProgram):
-
+    """
+    An AbstractProgram used for booting into the other AbstractPrograms of Gambling Simulator.
+    """
     def __init__(self, player_data: PlayerData):
         super().__init__()
+        self.__player_data = player_data
+
         # Instantiate graphics
         self.__gambling_simulator_logo = r'''
     $$$$$$\                          $$\       $$\ $$\                           

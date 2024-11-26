@@ -9,6 +9,7 @@ from programs.main_menu import MainMenu
 from programs.minigames.blackjack import BlackjackMinigame
 from programs.minigames.roulette import RouletteMinigame
 from programs.minigames.slots import SlotsMinigame
+from programs.store import Store
 
 
 class GamblingSimulator:
@@ -62,7 +63,8 @@ class GamblingSimulator:
                             self.game_state = GameState.MINIGAME
                             self.current_abstract_program = RouletteMinigame(self.__gambling_manager)
                         case 'store':
-                            pass # todo implement store
+                            self.game_state = GameState.STORE
+                            self.current_abstract_program = Store(self.player_data)
                         case 'credits':
                             pass # todo implement credits
                         case 'quit':
@@ -71,6 +73,12 @@ class GamblingSimulator:
             case GameState.MINIGAME:
                 minigame_complete = self.current_abstract_program.process_user_input(user_input)
                 if minigame_complete:
+                    self.game_state = GameState.MENU
+                    self.current_abstract_program = MainMenu(self.player_data)
+                    self.current_abstract_program.execute_program()
+            case GameState.STORE:
+                store_complete = self.current_abstract_program.process_user_input(user_input)
+                if store_complete:
                     self.game_state = GameState.MENU
                     self.current_abstract_program = MainMenu(self.player_data)
                     self.current_abstract_program.execute_program()
