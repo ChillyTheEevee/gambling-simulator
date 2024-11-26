@@ -30,21 +30,20 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
         self.__credit_string = "By Daniel Myers, Aiden Kline, Parker Cornelius, and Caleb Arnold"
 
         # Handling selection
-        self.__valid_options = ('blackjack', 'slots', 'roulette', 'quit')
+        self.__valid_options = ('blackjack', 'slots', 'roulette', 'store', 'credits', 'quit')
         self.__selected_option = None
 
     def _execute(self) -> bool:
         print(self)
-        print("Which game would you like to play?")
-        print("(blackjack, slots, roulette): ", end='')
         return False
 
     def _process_input(self, user_input: str) -> bool:
+        user_input = user_input.lower()
         if user_input in self.__valid_options:
             self.__selected_option = user_input
             return True
         else:
-            print("Please enter either blackjack, slots, or roulette: ", end='')
+            print("Enter one of the options above (i.e. blackjack, store, credits): ", end='')
             return False
 
     def get_selection(self) -> str:
@@ -70,5 +69,16 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
 
         # Append credit string centered below logo
         string_list[len(gambling_simulator_logo_lines) + 2] += f'{self.__credit_string:^80}'
+
+        # Append stylized selection options below credits
+        selection_display_string = 'Please enter either: '
+        for i in range(len(self.__valid_options)-1):
+            selection_display_string += f'{self.__valid_options[i].upper()}, '
+        selection_display_string += f'{self.__valid_options[-1].upper()}'
+
+        string_list[len(gambling_simulator_logo_lines) + 3] += f'{'-' * len(selection_display_string):^80}'
+        string_list[len(gambling_simulator_logo_lines) + 4] += f'{selection_display_string:^80}'
+        string_list[len(gambling_simulator_logo_lines) + 5] += f'{'-' * len(selection_display_string):^80}'
+
         # Return string representation of main menu
         return str.join('\n', string_list)

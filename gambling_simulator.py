@@ -61,6 +61,10 @@ class GamblingSimulator:
                         case 'roulette':
                             self.game_state = GameState.MINIGAME
                             self.current_abstract_program = RouletteMinigame(self.__gambling_manager)
+                        case 'store':
+                            pass # todo implement store
+                        case 'credits':
+                            pass # todo implement credits
                         case 'quit':
                             return True
                     self.current_abstract_program.execute_program()
