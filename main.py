@@ -1,4 +1,4 @@
-from casino_game import CasinoGame
+from gambling_simulator import GamblingSimulator
 
-game = CasinoGame()
+game = GamblingSimulator()
 game.execute_program()

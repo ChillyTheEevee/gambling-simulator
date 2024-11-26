@@ -11,36 +11,35 @@ from programs.minigames.roulette import RouletteMinigame
 from programs.minigames.slots import SlotsMinigame
 
 
-class CasinoGame:
+class GamblingSimulator:
     """
-    The primary program of Casino Game.
+    The primary program of Gambling Simulator.
 
-    The CasinoGame class is a representation of the entire Casino Game program.
+    The GamblingSimulator class is a representation of the entire Gambling Simulator program.
 
     Attributes:
-        game_state (GameState): The current game state of CasioGame
+        game_state (GameState): The current game state of GamblingSimulator.
         current_abstract_program (Optional[AbstractProgram]): The instance of the AbstractProgram currently being used
-            by CasinoGame, None if game_state is GameState.MENU
+            by GamblingSimulator, None if game_state is GameState.MENU
     """
 
     def __init__(self):
-        """Initializes the CasinoGame class with 1,000 initial coins"""
+        """Initializes the GamblingSimulator class with 1,000 initial coins"""
         self.player_data: PlayerData = PlayerData()
         self.game_state: GameState = GameState.MENU
-        self.current_abstract_program: Optional[AbstractProgram] = MainMenu()
+        self.current_abstract_program: Optional[AbstractProgram] = MainMenu(self.player_data)
 
         self.__gambling_manager = GamblingManager(self.player_data)
 
     def execute_program(self) -> None:
-        """Starts the primary gameplay loop of this CasinoGame."""
+        """Starts the primary gameplay loop of GamblingSimulator."""
         # todo insert startup logic here
-        print("Starting CasinoGame...")
         complete = self.current_abstract_program.execute_program()
         if not complete:
             self.run_game()
 
     def run_game(self) -> None:
-        """The gameplay loop of CasinoGame."""
+        """The gameplay loop of GamblingSimulator."""
         playing = True
         while playing:
             user_input = input()
@@ -62,11 +61,13 @@ class CasinoGame:
                         case 'roulette':
                             self.game_state = GameState.MINIGAME
                             self.current_abstract_program = RouletteMinigame(self.__gambling_manager)
+                        case 'quit':
+                            return True
                     self.current_abstract_program.execute_program()
             case GameState.MINIGAME:
                 minigame_complete = self.current_abstract_program.process_user_input(user_input)
                 if minigame_complete:
                     self.game_state = GameState.MENU
-                    self.current_abstract_program = MainMenu()
+                    self.current_abstract_program = MainMenu(self.player_data)
                     self.current_abstract_program.execute_program()
         return False
