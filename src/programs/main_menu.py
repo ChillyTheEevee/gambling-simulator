@@ -30,9 +30,9 @@ $$ /  \__|$$\ $$$$$$\$$$$\  $$\   $$\ $$ | $$$$$$\ $$$$$$\    $$$$$$\   $$$$$$\
  \____$$\ $$ |$$ / $$ / $$ |$$ |  $$ |$$ | $$$$$$$ | $$ |    $$ /  $$ |$$ |  \__|
 $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |      
 \$$$$$$  |$$ |$$ | $$ | $$ |\$$$$$$  |$$ |\$$$$$$$ | \$$$$  |\$$$$$$  |$$ |      
- \______/ \__|\__| \__| \__| \______/ \__| \_______|  \____/  \______/ \__|      
-        ''' # todo credit https://patorjk.com
+ \______/ \__|\__| \__| \__| \______/ \__| \_______|  \____/  \______/ \__|      ''' # todo credit https://patorjk.com
         self.__credit_string = "By Daniel Myers, Aiden Kline, Parker Cornelius, and Caleb Arnold"
+        self.__version_string = "ENGR 102 Fall 2024 v1.0"
 
         # Handling selection
         self.__valid_options = ('blackjack', 'slots', 'roulette', 'store', 'quit')
@@ -74,7 +74,7 @@ $$\   $$ |$$ |$$ | $$ | $$ |$$ |  $$ |$$ |$$  __$$ | $$ |$$\ $$ |  $$ |$$ |
 
         # Append credit string centered below logo
         string_list[len(gambling_simulator_logo_lines) + 2] += f'{self.__credit_string:^80}'
-        string_list[len(gambling_simulator_logo_lines) + 6] += f'{"ENGR 102 Fall 2024":^80}'
+        string_list[len(gambling_simulator_logo_lines) + 6] += f'{self.__version_string:^80}'
 
         # Append stylized selection options below credits
         selection_display_string = 'Please enter either: '

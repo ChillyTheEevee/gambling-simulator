@@ -15,6 +15,6 @@ class Rent(AbstractItem):
  |RENTER |
   \     /
   `---'
-   _|_|_
+  _|_|_
 """.split('\n'))
         super().__init__("Rent", 670, purchase_message, picture)
