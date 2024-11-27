@@ -15,8 +15,9 @@ class RouletteMinigame(AbstractProgram):
     def __init__(self, gambling_manager: GamblingManager):
         super().__init__()
         self.__gambling_manager = gambling_manager
-        self.__wheel = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 0, "00"]
+        self.__wheel = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14',
+                        '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27',
+                        '28', '29', '30', '31', '32', '33', '34', '35', '36', '0', '00']
         self.__money_pool = None
         self.__bet_type = None
 
@@ -55,11 +56,17 @@ class RouletteMinigame(AbstractProgram):
 
         # Gather input for specific bet type and then run roulette.
         if self.__bet_type == 'number':
-            try:
-                bet_numbers = [int(x.strip()) for x in user_input.split(',')]
-            except ValueError:
-                print("Invalid bet. Try again: ", end='')
-                return False
+            bet_numbers = [x.strip() for x in user_input.split(',')]
+            bet_number_set = set()
+            for number in bet_numbers:
+                # You cannot bet for the same number twice
+                if number in bet_number_set:
+                    print("Invalid bet. Try again: ", end='')
+                    return False
+                bet_number_set.add(number)
+                if number not in self.__wheel:
+                    print("Invalid bet. Try again: ", end='')
+                    return False
         elif self.__bet_type == 'color':
             bet_numbers = []
             user_input = user_input.lower()
@@ -71,9 +78,9 @@ class RouletteMinigame(AbstractProgram):
 
         # Spin the wheel
         result = random.choice(self.__wheel)
-        if result in [0, "00"]:
+        if result == '0' or result == '00':
             result_color = 'green'
-        elif result % 2 == 1:
+        elif int(result) % 2 == 1:
             result_color = 'red'
         else:
             result_color = 'black'
@@ -85,8 +92,8 @@ class RouletteMinigame(AbstractProgram):
         # number betting results
         if self.__bet_type == 'number':
             if result in bet_numbers:
-                payout_odds = (len(bet_numbers) / 38)
-                winnings = round(self.__money_pool - (self.__money_pool * (payout_odds)))
+                payout_multiplier = 37 / len(bet_numbers)
+                winnings = round(self.__money_pool * payout_multiplier)
                 print(f"Congratulations! You won {winnings} coins on number {result}.")
             else:
                 print(f"L, {result}")
