@@ -1,6 +1,6 @@
-from items.abstract_item import AbstractItem
-from player_data import PlayerData
-from programs.abstract_program import AbstractProgram
+from src.items.abstract_item import AbstractItem
+from src.player_data import PlayerData
+from src.programs.abstract_program import AbstractProgram
 
 
 class MainMenu(AbstractProgram):

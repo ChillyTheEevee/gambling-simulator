@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
-from exceptions.abstract_program_complete_exception import AbstractProgramCompleteException
-from exceptions.already_executed_exception import AlreadyExecutedException
-from exceptions.execution_not_initiated_exception import ExecutionNotInitiatedException
+from src.exceptions.abstract_program_complete_exception import AbstractProgramCompleteException
+from src.exceptions.already_executed_exception import AlreadyExecutedException
+from src.exceptions.execution_not_initiated_exception import ExecutionNotInitiatedException
 
 
 class AbstractProgram(ABC):

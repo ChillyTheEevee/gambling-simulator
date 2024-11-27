@@ -1,4 +1,4 @@
-from player_data import PlayerData
+from src.player_data import PlayerData
 
 
 class GamblingManager:

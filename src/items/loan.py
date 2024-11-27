@@ -1,6 +1,4 @@
-from abc import ABC
-
-from items.abstract_item import AbstractItem
+from src.items.abstract_item import AbstractItem
 
 
 class Loan(AbstractItem):

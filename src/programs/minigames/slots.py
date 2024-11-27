@@ -1,8 +1,8 @@
 import random
 from typing import override
 
-from managers.gambling_manager import GamblingManager
-from programs.abstract_program import AbstractProgram
+from src.managers.gambling_manager import GamblingManager
+from src.programs.abstract_program import AbstractProgram
 
 
 class SlotsMinigame(AbstractProgram):

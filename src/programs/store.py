@@ -1,10 +1,10 @@
-from items.abstract_item import AbstractItem
-from items.groceries import Groceries
-from items.honda_civic import HondaCivic
-from items.loan import Loan
-from items.rent import Rent
-from player_data import PlayerData
-from programs.abstract_program import AbstractProgram
+from src.items.abstract_item import AbstractItem
+from src.items.groceries import Groceries
+from src.items.honda_civic import HondaCivic
+from src.items.loan import Loan
+from src.items.rent import Rent
+from src.player_data import PlayerData
+from src.programs.abstract_program import AbstractProgram
 
 
 class Store(AbstractProgram):
