@@ -86,7 +86,7 @@ class RouletteMinigame(AbstractProgram):
         if self.__bet_type == 'number':
             if result in bet_numbers:
                 payout_odds = (len(bet_numbers) / 38)
-                winnings = round(bet - (bet * (payout_odds)))
+                winnings = round(self.__money_pool - (self.__money_pool * (payout_odds)))
                 print(f"Congratulations! You won {winnings} coins on number {result}.")
             else:
                 print(f"L, {result}")
@@ -98,7 +98,7 @@ class RouletteMinigame(AbstractProgram):
                     winnings = self.__money_pool
                     print(f"Congratulations! You won {winnings} coins on {result_color}.")
                 elif bet_color == 'green':
-                    winnings = round(bet * 36)
+                    winnings = round(self.__money_pool * 36)
             else:
                 print(f"L, {result_color}")
 
