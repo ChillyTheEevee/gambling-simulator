@@ -104,6 +104,7 @@ class RouletteMinigame(AbstractProgram):
 
         # Provide winnings to player
         if winnings > 0:
+            self.__gambling_manager.give_player_payout(self.__money_pool)  # Return money on victory
             self.__gambling_manager.give_player_payout(winnings)
         else:
             print(f"Lost {self.__money_pool} coins.\n")
